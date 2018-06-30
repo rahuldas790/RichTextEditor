@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 public class EditorToolbar extends LinearLayout {
 
+    //root horizontal scroll view
     private HorizontalScrollView horizontalScrollView;
 
     public EditorToolbar(Context context) {
