@@ -1,15 +1,25 @@
 package jp.wasabeef.richeditor;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.Toast;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class EditorToolbar extends LinearLayout {
 
+    private Context context;
     //root horizontal scroll view
     private HorizontalScrollView horizontalScrollView;
 
@@ -27,6 +37,7 @@ public class EditorToolbar extends LinearLayout {
     }
 
     private void init(Context context) {
+        this.context = context;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.toolbar_layout, this);
@@ -38,7 +49,18 @@ public class EditorToolbar extends LinearLayout {
         horizontalScrollView = findViewById(R.id.scrollView);
     }
 
-    public void setUpWithEditor(final RichEditor mEditor){
+    public void setColorTint(int colorTint) {
+        LinearLayout scrollView = (LinearLayout)
+                ((HorizontalScrollView) getChildAt(0)).getChildAt(0);
+        int children = scrollView.getChildCount();
+        for (int i = 0; i < children; i++) {
+            ImageView imageView = (ImageView) scrollView.getChildAt(i);
+            imageView.setColorFilter(colorTint,
+                    android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    public void setUpWithEditor(final RichEditor mEditor) {
         findViewById(R.id.action_undo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,133 +120,168 @@ public class EditorToolbar extends LinearLayout {
         findViewById(R.id.action_heading1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor.setHeading(1);
-            }
-        });
-
-        findViewById(R.id.action_heading2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(2);
-            }
-        });
-
-        findViewById(R.id.action_heading3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(3);
-            }
-        });
-
-        findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(4);
-            }
-        });
-
-        findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(5);
-            }
-        });
-
-        findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(6);
+                PopupMenu heading_popup = new PopupMenu(getContext(), v);
+                heading_popup.getMenuInflater().inflate(R.menu.heading_menu, heading_popup.getMenu());
+                heading_popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.action_heading1) {
+                            mEditor.setHeading(1);
+                        }
+                        if (item.getItemId() == R.id.action_heading2) {
+                            mEditor.setHeading(2);
+                        }
+                        if (item.getItemId() == R.id.action_heading3) {
+                            mEditor.setHeading(3);
+                        }
+                        if (item.getItemId() == R.id.action_heading4) {
+                            mEditor.setHeading(4);
+                        }
+                        if (item.getItemId() == R.id.action_heading5) {
+                            mEditor.setHeading(5);
+                        }
+                        if (item.getItemId() == R.id.action_heading6) {
+                            mEditor.setHeading(6);
+                        }
+                        return true;
+                    }
+                });
+                heading_popup.show();
             }
         });
 
         findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
-            private boolean isChanged;
-
             @Override
             public void onClick(View v) {
-                mEditor.setTextColor(isChanged ? Color.BLACK : Color.RED);
-                isChanged = !isChanged;
+                color_selection(mEditor, true);
             }
         });
 
         findViewById(R.id.action_bg_color).setOnClickListener(new View.OnClickListener() {
-            private boolean isChanged;
-
             @Override
             public void onClick(View v) {
-                mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
-                isChanged = !isChanged;
+                color_selection(mEditor, false);
             }
         });
 
         findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor.setIndent();
-            }
-        });
-
-        findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setOutdent();
-            }
-        });
-
-        findViewById(R.id.action_align_left).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setAlignLeft();
-            }
-        });
-
-        findViewById(R.id.action_align_center).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setAlignCenter();
-            }
-        });
-
-        findViewById(R.id.action_align_right).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setAlignRight();
-            }
-        });
-
-        findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setBlockquote();
+                PopupMenu Indent_popup = new PopupMenu(context, v);
+                Indent_popup.getMenuInflater().inflate(R.menu.indent_menu, Indent_popup.getMenu());
+                Indent_popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.action_indent) {
+                            mEditor.setIndent();
+                        }
+                        if (item.getItemId() == R.id.action_outdent) {
+                            mEditor.setOutdent();
+                        }
+                        if (item.getItemId() == R.id.action_align_left) {
+                            mEditor.setAlignLeft();
+                        }
+                        if (item.getItemId() == R.id.action_align_center) {
+                            mEditor.setAlignCenter();
+                        }
+                        if (item.getItemId() == R.id.action_align_right) {
+                            mEditor.setAlignRight();
+                        }
+                        return true;
+                    }
+                });
+                Indent_popup.show();
             }
         });
 
         findViewById(R.id.action_insert_bullets).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor.setBullets();
-            }
-        });
-
-        findViewById(R.id.action_insert_numbers).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setNumbers();
+                PopupMenu List_popoup = new PopupMenu(context, v);
+                List_popoup.getMenuInflater().inflate(R.menu.list_menu, List_popoup.getMenu());
+                List_popoup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.action_insert_bullet) {
+                            mEditor.setBullets();
+                        }
+                        if (item.getItemId() == R.id.action_insert_numbers) {
+                            mEditor.setNumbers();
+                        }
+                        return true;
+                    }
+                });
+                List_popoup.show();
             }
         });
 
         findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor.insertImage("http://www.1honeywan.com/dachshund/image/7.21/7.21_3_thumb.JPG",
-                        "dachshund");
+                final EditText Image_Link;
+
+                LayoutInflater LI = LayoutInflater.from(context);
+                View PromptsView = LI.inflate(R.layout.image_dialog, null);
+
+                Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                alertDialogBuilder.setView(PromptsView);
+                alertDialogBuilder
+                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mEditor.insertImage(Image_Link.getText().toString(), "Image");
+                            }
+                        })
+                        .setNegativeButton("Choose from Gallery", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (listener != null) {
+                                    listener.onChoosePick();
+                                }
+                            }
+                        });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
             }
         });
 
         findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor.insertLink("https://github.com/wasabeef", "wasabeef");
+                final EditText Href_Link, Href_Title;
+
+                LayoutInflater LI = LayoutInflater.from(context);
+                View PromptsView = LI.inflate(R.layout.href_dailog, null);
+
+                Href_Link = (EditText) PromptsView.findViewById(R.id.Href_Link);
+                Href_Title = (EditText) PromptsView.findViewById(R.id.Href_Title);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                alertDialogBuilder.setView(PromptsView);
+                alertDialogBuilder
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                mEditor.insertLink(Href_Link.getText().toString(), Href_Title.getText().toString());
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
         findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
@@ -233,5 +290,39 @@ public class EditorToolbar extends LinearLayout {
                 mEditor.insertTodo();
             }
         });
+    }
+
+    public void color_selection(final RichEditor mEditor, final boolean choice) {
+
+        AmbilWarnaDialog dialog = new AmbilWarnaDialog(context, Color.RED, false, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+
+            }
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                Toast.makeText(context, "ok", Toast.LENGTH_SHORT).show();
+                //SampleActivity.this.color = color;
+                if (choice == true) {
+                    mEditor.setTextColor(color);
+                }
+                if (choice == false) {
+                    mEditor.setTextBackgroundColor(color);
+                }
+
+            }
+        });
+        dialog.show();
+    }
+
+    private OnImagePickListener listener;
+
+    public void setImagePickListener(OnImagePickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnImagePickListener {
+        void onChoosePick();
     }
 }

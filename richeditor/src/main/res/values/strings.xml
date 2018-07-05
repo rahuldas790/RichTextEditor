@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="toolbar_item">toolbar item</string>
+    <string name="heading_1">heading 1</string>
+    <string name="heading_2">heading 2</string>
+    <string name="heading_3">heading 3</string>
+    <string name="heading_4">heading 4</string>
+    <string name="heading_5">heading 5</string>
+    <string name="heading_6">heading 6</string>
+    <string name="indent">Left indent</string>
+    <string name="outdent">Right indent</string>
+    <string name="align_left">Align left</string>
+    <string name="align_center">Align center</string>
+    <string name="align_right">Align right</string>
+    <string name="ordered_list">Ordered List</string>
+    <string name="unordered_list">Unordered List</string>
 </resources>
