@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements EditorToolbar.OnI
         toolbar.setUpWithEditor(mEditor);
         toolbar.setImagePickListener(this);
         toolbar.setColorTint(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        mEditor.clearFocusEditor();
     }
 
 

@@ -157,13 +157,18 @@ small {
  * Prevent `sub` and `sup` affecting `line-height` in all browsers.
  */
 
-sub,
+/**
+ * Rahul kumar das
+ * removing this to avoid multiple level superscript or subscript
+ * To see what i meant, simply remove the following bottom comment and see.
+ */
+/*sub,
 sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
-}
+}*/
 
 sup {
   top: -0.5em;
