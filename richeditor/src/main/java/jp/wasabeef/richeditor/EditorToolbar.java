@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,12 +14,29 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class EditorToolbar extends LinearLayout {
 
+
+    private boolean boldEnabled = false;
+    private boolean italicEnabled = false;
+    private boolean underlineEnabled = false;
+    private boolean strikeEnabled = false;
+    private boolean superScriptEnabled = false;
+    private boolean subscriptEnabled = false;
+
+    private boolean textColorEnabled = false;
+    private boolean textBackgroundEnabled = false;
+
+    private int textDefaultColor;
+    private int textDefaultBackgroundColor = Color.argb(255, 255, 255, 255);
+
+
+    private int colorTint = Color.argb(255, 170, 170, 170);
     private Context context;
     //root horizontal scroll view
     private HorizontalScrollView horizontalScrollView;
@@ -41,6 +59,7 @@ public class EditorToolbar extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.toolbar_layout, this);
+        textDefaultColor = new TextView(context).getCurrentTextColor();
     }
 
     @Override
@@ -50,6 +69,7 @@ public class EditorToolbar extends LinearLayout {
     }
 
     public void setColorTint(int colorTint) {
+        this.colorTint = colorTint;
         LinearLayout scrollView = (LinearLayout)
                 ((HorizontalScrollView) getChildAt(0)).getChildAt(0);
         int children = scrollView.getChildCount();
@@ -78,42 +98,54 @@ public class EditorToolbar extends LinearLayout {
         findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boldEnabled = !boldEnabled;
                 mEditor.setBold();
+                applySelection(boldEnabled, v);
             }
         });
 
         findViewById(R.id.action_italic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                italicEnabled = !italicEnabled;
                 mEditor.setItalic();
+                applySelection(italicEnabled, v);
             }
         });
 
         findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                subscriptEnabled = !subscriptEnabled;
                 mEditor.setSubscript();
+                applySelection(subscriptEnabled, v);
             }
         });
 
         findViewById(R.id.action_superscript).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                superScriptEnabled = !superScriptEnabled;
                 mEditor.setSuperscript();
+                applySelection(superScriptEnabled, v);
             }
         });
 
         findViewById(R.id.action_strikethrough).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                strikeEnabled = !strikeEnabled;
                 mEditor.setStrikeThrough();
+                applySelection(strikeEnabled, v);
             }
         });
 
         findViewById(R.id.action_underline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                underlineEnabled = !underlineEnabled;
                 mEditor.setUnderline();
+                applySelection(underlineEnabled, v);
             }
         });
 
@@ -153,14 +185,26 @@ public class EditorToolbar extends LinearLayout {
         findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                color_selection(mEditor, true);
+                if (!textColorEnabled) {
+                    color_selection(mEditor, true, v);
+                } else {
+                    mEditor.setTextColor(textDefaultColor);
+                    v.setBackground(null);
+                    textColorEnabled = !textColorEnabled;
+                }
             }
         });
 
         findViewById(R.id.action_bg_color).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                color_selection(mEditor, false);
+                if(!textBackgroundEnabled) {
+                    color_selection(mEditor, false, v);
+                }else{
+                    mEditor.setTextBackgroundColor(textDefaultBackgroundColor);
+                    v.setBackground(null);
+                    textBackgroundEnabled = !textBackgroundEnabled;
+                }
             }
         });
 
@@ -292,7 +336,17 @@ public class EditorToolbar extends LinearLayout {
         });
     }
 
-    public void color_selection(final RichEditor mEditor, final boolean choice) {
+    private void applySelection(boolean enabled, View v) {
+        if (enabled) {
+            ((ImageView) v).setColorFilter(Color.argb(255, 0, 0, 0),
+                    android.graphics.PorterDuff.Mode.MULTIPLY);
+        } else {
+            ((ImageView) v).setColorFilter(colorTint,
+                    android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    public void color_selection(final RichEditor mEditor, final boolean choice, final View view) {
 
         AmbilWarnaDialog dialog = new AmbilWarnaDialog(context, Color.RED, false, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
@@ -306,9 +360,13 @@ public class EditorToolbar extends LinearLayout {
                 //SampleActivity.this.color = color;
                 if (choice == true) {
                     mEditor.setTextColor(color);
+                    view.setBackground(getResources().getDrawable(R.drawable.circle_background));
+                    textColorEnabled = !textColorEnabled;
                 }
                 if (choice == false) {
                     mEditor.setTextBackgroundColor(color);
+                    view.setBackground(getResources().getDrawable(R.drawable.circle_background));
+                    textBackgroundEnabled = !textBackgroundEnabled;
                 }
 
             }
