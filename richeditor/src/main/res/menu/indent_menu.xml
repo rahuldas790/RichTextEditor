@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_indent"
+        android:icon="@drawable/indent"
+        android:title="@string/indent" />
+
+    <item
+        android:id="@+id/action_outdent"
+        android:icon="@drawable/outdent"
+        android:title="@string/outdent" />
+
+    <item
+        android:id="@+id/action_align_left"
+        android:icon="@drawable/justify_left"
+        android:title="@string/align_left" />
+
+    <item
+        android:id="@+id/action_align_center"
+        android:icon="@drawable/justify_center"
+        android:title="@string/align_center" />
+
+    <item
+        android:id="@+id/action_align_right"
+        android:icon="@drawable/justify_right"
+        android:title="@string/align_right" />
+</menu>

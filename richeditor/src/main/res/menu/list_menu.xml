@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_insert_bullet"
+        android:icon="@drawable/bullets"
+        android:title="@string/unordered_list" />
+
+    <item
+        android:id="@+id/action_insert_numbers"
+        android:icon="@drawable/numbers"
+        android:title="@string/ordered_list" />
+</menu>

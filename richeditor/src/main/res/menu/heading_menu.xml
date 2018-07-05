@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_heading1"
+        android:icon="@drawable/h1"
+        android:title="@string/heading_1" />
+
+    <item
+        android:id="@+id/action_heading2"
+        android:icon="@drawable/h2"
+        android:title="@string/heading_2" />
+
+    <item
+        android:id="@+id/action_heading3"
+        android:icon="@drawable/h3"
+        android:title="@string/heading_3" />
+
+    <item
+        android:id="@+id/action_heading4"
+        android:icon="@drawable/h4"
+        android:title="@string/heading_4" />
+
+    <item
+        android:id="@+id/action_heading5"
+        android:icon="@drawable/h5"
+        android:title="@string/heading_5" />
+
+    <item
+        android:id="@+id/action_heading6"
+        android:icon="@drawable/h6"
+        android:title="@string/heading_6" />
+</menu>
